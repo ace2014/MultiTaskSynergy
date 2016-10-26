@@ -1,5 +1,10 @@
 package com.pzl.library;
 
+import android.os.AsyncTask;
+import android.support.annotation.CallSuper;
+
+import com.pzl.library.interfaces.IProgress;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RunnableFuture;
@@ -12,6 +17,7 @@ import java.util.concurrent.TimeoutException;
  *          多并行任务
  */
 public class MultiTask implements RunnableFuture<Object> {
+    private IProgress progress;
     private CountDownLatch latch;
     /**
      * 任务结果
@@ -22,9 +28,12 @@ public class MultiTask implements RunnableFuture<Object> {
         this.latch = latch;
     }
 
+    @CallSuper
     @Override
     public void run() {
         latch.countDown();
+        progress.getRemainingAmount((int) latch.getCount());
+        destroy();
     }
 
     @Override
@@ -50,5 +59,14 @@ public class MultiTask implements RunnableFuture<Object> {
     @Override
     public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException { //todo
         return null;
+    }
+
+    public void regIProgress(IProgress progress) {
+        this.progress = progress;
+    }
+
+    private void destroy() {
+        progress = null;
+        latch = null;
     }
 }

@@ -1,6 +1,7 @@
 package com.pzl.library;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +15,7 @@ public class FinalTask {
     protected Object result;
 
     @CallSuper//第一行
+    @WorkerThread//后台线程
     protected Object run(MultiTask[] preTasks) {
         getPreResults(preTasks);
 
